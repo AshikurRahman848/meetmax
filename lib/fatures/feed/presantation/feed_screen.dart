@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meetmax/common/widget/nav_bar.dart';
+import 'package:meetmax/core/theme.dart';
 import 'package:meetmax/fatures/feed/presantation/create_post_screen.dart';
 import 'package:meetmax/fatures/feed/presantation/widget/post_cart.dart';
+//import 'package:meetmax/theme/app_theme.dart'; // 👈 make sure this path is correct
 import '../data/feed_repository.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
@@ -17,44 +19,59 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   @override
   Widget build(BuildContext context) {
     final postsState = ref.watch(feedProvider);
+    final theme = Theme.of(context);
+    final cs = theme.colorScheme;
+    final textTheme = theme.textTheme;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F6FA),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
+        actionsPadding: EdgeInsets.all(8),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: cs.surface, // was Colors.white
+        surfaceTintColor: Colors.transparent,
         toolbarHeight: 64,
         titleSpacing: 0,
         title: Padding(
-          padding: const EdgeInsets.only(right: 12),
+          padding: const EdgeInsets.only(right: 12,left: 12),
           child: Row(
-            children: [
-              const CircleAvatar(
-                radius: 16,
-                backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=1'),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxHeight: 36),
-                  child: TextField(
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      hintText: 'Search for something here...',
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                      prefixIcon: const Icon(Icons.search, size: 20),
-                      filled: true,
-                      fillColor: const Color(0xFFF5F7FA),
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+        children: [
+          const CircleAvatar(
+            radius: 16,
+            backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=1'),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: ConstrainedBox(
+          constraints: const BoxConstraints(maxHeight: 36),
+          child: TextField(
+            textAlignVertical: TextAlignVertical.center,
+            decoration: InputDecoration(
+              isDense: true,
+              hintText: 'Search for something here...',
+              prefixIcon: const Icon(Icons.search, size: 20),
+              // rely on global InputDecorationTheme for fill/border
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              // If you want the lighter chip-like bg specifically:
+              fillColor: AppTheme.grey100,
+            ),
+            style: textTheme.bodyMedium,
+          ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          // Add padding before the image
+          const SizedBox(width: 8),
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, right: 4.0),
+            child: Image.asset(
+          'assets/message.png',
+          width: 24,
+          height: 24,
+          color: cs.onSurface, // was Colors.black87
+            ),
+          ),
+        ],
           ),
         ),
       ),
@@ -120,6 +137,7 @@ class _StoriesRow extends StatelessWidget {
     return SizedBox(
       height: 120,
       child: Card(
+        // uses global CardTheme (color, radius, elevation)
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
           child: ListView.separated(
@@ -155,6 +173,9 @@ class _StoryAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Column(
       children: [
         Stack(
@@ -167,11 +188,11 @@ class _StoryAvatar extends StatelessWidget {
                 bottom: -2,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.blue,
+                    color: cs.primary, // was Colors.blue
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.all(2),
-                  child: const Icon(Icons.add, size: 16, color: Colors.white),
+                  child: Icon(Icons.add, size: 16, color: cs.onPrimary),
                 ),
               ),
           ],
@@ -183,7 +204,7 @@ class _StoryAvatar extends StatelessWidget {
             label,
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
-            style: const TextStyle(fontSize: 12),
+            style: textTheme.bodySmall, // was const TextStyle(fontSize: 12)
           ),
         ),
       ],
@@ -197,12 +218,14 @@ class _Composer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Card(
       child: ListTile(
         leading: const CircleAvatar(
           backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=1'),
         ),
-        title: const Text("What's happening?"),
+        title: Text("What's happening?", style: textTheme.bodyLarge),
         onTap: () async {
           final result = await Navigator.push(
             context,
@@ -226,13 +249,18 @@ class _RecentEvents extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
+
     Widget item(IconData icon, String title, String subtitle, String seen) {
       return Card(
         child: ListTile(
-          leading: CircleAvatar(child: Icon(icon)),
-          title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
-          subtitle:
-              Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis),
+          leading: CircleAvatar(
+            backgroundColor: cs.surfaceVariant,
+            child: Icon(icon, color: cs.onSurfaceVariant),
+          ),
+          title: Text(title, style: textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600)),
+          subtitle: Text(subtitle, maxLines: 2, overflow: TextOverflow.ellipsis),
           trailing: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: const [
@@ -253,20 +281,18 @@ class _RecentEvents extends StatelessWidget {
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            Padding(
+          children: [
+            const Padding(
               padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-              child: Text('Recent Event',
-                  style: TextStyle(fontWeight: FontWeight.w700)),
+              child: Text('Recent Event'),
             ),
-            Icon(Icons.more_horiz),
+            Icon(Icons.more_horiz, color: cs.onSurfaceVariant),
           ],
         ),
         item(Icons.school, 'Graduation Ceremony',
             'The graduation ceremony is also sometimes called...', '8 seen'),
         item(Icons.camera_alt, 'Photography Ideas',
-            'Reflections. Reflections work because they can create...',
-            '11 seen'),
+            'Reflections. Reflections work because they can create...', '11 seen'),
       ],
     );
   }
@@ -277,37 +303,41 @@ class _BirthdaysSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-            child: Text('Birthdays',
-                style: TextStyle(fontWeight: FontWeight.w700)),
-          ),
-          Text('See All'),
-        ],
-      ),
-      Card(
-        child: ListTile(
-          leading: const CircleAvatar(
-            backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=12'),
-          ),
-          title: const Text('Edilson De Carvalho'),
-          subtitle: const Text('Birthday today'),
-          trailing:
-              IconButton(onPressed: () {}, icon: const Icon(Icons.send)),
+    final textTheme = Theme.of(context).textTheme;
+    final cs = Theme.of(context).colorScheme;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+              child: Text('Birthdays'),
+            ),
+            Text('See All', style: textTheme.bodyMedium?.copyWith(color: cs.primary)),
+          ],
         ),
-      ),
-      Card(
-        child: ListTile(
-          leading: const Icon(Icons.cake_outlined),
-          title: const Text('Upcoming birthdays'),
-          subtitle: const Text('See 12 others have upcoming birthdays'),
-          onTap: () {},
+        const Card(
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage('https://i.pravatar.cc/150?img=12'),
+            ),
+            title: Text('Edilson De Carvalho'),
+            subtitle: Text('Birthday today'),
+            trailing: Icon(Icons.send),
+          ),
         ),
-      ),
-    ]);
+        Card(
+          child: ListTile(
+            leading: Icon(Icons.cake_outlined, color: cs.onSurfaceVariant),
+            title: const Text('Upcoming birthdays'),
+            subtitle: const Text('See 12 others have upcoming birthdays'),
+            onTap: () {},
+          ),
+        ),
+      ],
+    );
   }
 }

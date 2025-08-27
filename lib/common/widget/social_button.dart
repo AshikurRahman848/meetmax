@@ -9,7 +9,7 @@ class SocialButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton.icon(
       onPressed: onTap,
-      icon: Icon(icon, size: 18),
+      icon: Icon(icon, size: 25),
       label: Text(label),
       style: OutlinedButton.styleFrom(
         minimumSize: const Size.fromHeight(46),
