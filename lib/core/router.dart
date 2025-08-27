@@ -10,7 +10,6 @@ import 'package:meetmax/fatures/auth/presantation/sign-up_screen.dart';
 //import 'package:meetmax/fatures/auth/presantation/forgot_password_screen.dart';
 import 'package:meetmax/fatures/feed/presantation/feed_screen.dart';
 
-/// Replacement for GoRouterRefreshStream to work well with Riverpod
 class RouterRefresh extends ChangeNotifier {
   RouterRefresh(Stream<dynamic> stream) {
     _sub = stream.listen((_) => notifyListeners());
