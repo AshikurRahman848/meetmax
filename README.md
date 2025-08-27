@@ -1,16 +1,23 @@
-# meetmax
+# 📱 meetmax
 
-A new Flutter project.
+A modern Flutter social feed application built with **Riverpod** for state management, **Material 3 theming**, and a modular feature-first architecture.  
 
-## Getting Started
+This project demonstrates a scalable Flutter setup with mock backend simulation, reusable UI components, and centralized theming.
 
-This project is a starting point for a Flutter application.
+---
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Getting Started
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Prerequisites
+Make sure you have the following installed:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- **Flutter**: 3.32.0 (stable) or newer  
+- **Dart**: Included with Flutter SDK  
+- **Android Studio** or **VS Code** with Flutter/Dart plugins  
+- **Xcode** (for iOS/macOS builds)  
+- **Android SDK** (for Android builds)  
+
+Check your setup:
+```bash
+flutter doctor
+
